@@ -121,7 +121,7 @@ def loadconfig():
 	global rootdir
 	global homepagepath
 	global pagenotfoundpath
-	if os.path.isfile(configpath):
+	if os.path.isfile(configpath): # If the config file exists
 		print("Loading configuration file at " + configpath)
 		f = open(configpath, 'r')
 		lines = f.readlines()
@@ -136,7 +136,7 @@ def loadconfig():
 				pagenotfoundpath = linedata[1]
 			else:
 				print("Invalid configuration file on " + line)
-	else:
+	else: # If the config file doesn't exist create it with default values
 		print("Configuration file not found! Creating one at " + configpath)
 		os.makedirs(os.path.dirname(configpath), mode=0o755, exist_ok=True)
 		f = open(configpath, 'w')

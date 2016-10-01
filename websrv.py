@@ -9,7 +9,7 @@ SERVER_ADDRESS = (HOST, PORT) = '', 8888
 REQUEST_QUEUE_SIZE = 5
 
 # Configuration variables
-configpath = "/home/intrepidpig/.config/yourserver/config"
+configpath = os.path.expanduser('~') + "/.config/yourserver/config"
 rootdir = "/srv/http"
 homepagepath = "/index.html"
 pagenotfoundpath = rootdir + "/notfound.html"

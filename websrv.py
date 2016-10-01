@@ -9,6 +9,7 @@ SERVER_ADDRESS = (HOST, PORT) = '', 8888
 REQUEST_QUEUE_SIZE = 5
 
 # Configuration variables
+configpath = "/home/intrepidpig/.config/yourserver/config"
 rootdir = "/srv/http"
 homepagepath = "/index.html"
 pagenotfoundpath = rootdir + "/notfound.html"
@@ -114,6 +115,33 @@ def serve():
 		else:  # Code if process is the parent
 			client_connection.close()  # Close the connection and wait for the next
 		
-		
+
+# Load configuration file
+def loadconfig():
+	global rootdir
+	global homepagepath
+	global pagenotfoundpath
+	if os.path.isfile(configpath):
+		print("Loading configuration file at " + configpath)
+		f = open(configpath, 'r')
+		lines = f.readlines()
+		f.close()
+		for line in lines:
+			linedata = line.split(' ')
+			if linedata[0] == "rootdir":
+				rootdir = linedata[1]
+			elif linedata[0] == "homepage":
+				homepagepath = linedata[1]
+			elif linedata[0] == "404page":
+				pagenotfoundpath = linedata[1]
+			else:
+				print("Invalid configuration file on " + line)
+	else:
+		print("Configuration file not found! Creating one at " + configpath)
+		os.makedirs(os.path.dirname(configpath), mode=0o755, exist_ok=True)
+		f = open(configpath, 'w')
+		f.write("rootdir " + rootdir + "\nhomepage " + homepagepath + "\n404page " + pagenotfoundpath)
+
 if __name__ == '__main__':
+	loadconfig()
 	serve()

@@ -63,7 +63,7 @@ HTTP/1.1 201 Created
 
 """ # Make a list of links to each object in the directory
 		for content in os.listdir(fullpath):
-			dircontent = dircontent + '<a href="' + fullpath + content + '">' + content + '</a>\n'
+			dircontent = dircontent + '<a href="' + fullpath + content + '">' + content + '</a>\n<br>\n'
 		return bytearray(dircontent, 'utf-8')
 	else:
 		print("Requested file not found\n-----------------------")

@@ -2,6 +2,7 @@ import socket
 import errno
 import os
 import signal
+import time
 
 # Networking variables
 SERVER_ADDRESS = (HOST, PORT) = '', 8888
@@ -12,15 +13,12 @@ rootdir = "/srv/http"
 homepagepath = "/index.html"
 pagenotfoundpath = rootdir + "/notfound.html"
 
-# Return the response based on the request
+# Return the response based on the requestfda
 def handlerequest(request):
 	print("\n-----------------------\n## New Request ##")
 	print(request)
 	print("\n## Loading Response ##")
-	http_response = b"""\
-HTTP/1.1 200 OK
-
-""" + getfiledata(request)
+	http_response = getfiledata(request)
 	return http_response
 
 
@@ -51,14 +49,31 @@ def getfiledata(request):
 	if os.path.isfile(fullpath): # If the file exists
 		print("Loading file " + fullpath + "\n-----------------------")
 		f = open(fullpath, 'rb')
-		data = f.read()
+		data = b"""\
+HTTP/1.1 200 OK
+
+"""
+		data += f.read()
 		f.close()
+	elif os.path.isdir(fullpath): # If it's a directory
+		print("Generating directory contents as HTML\n-----------------------")
+		dircontent = data = """\
+HTTP/1.1 201 Created
+
+""" # Make a list of links to each object in the directory
+		for content in os.listdir(fullpath):
+			dircontent = dircontent + '<a href="' + fullpath + content + '">' + content + '</a>\n'
+		return bytearray(dircontent, 'utf-8')
 	else:
 		print("Requested file not found\n-----------------------")
 		f = open(pagenotfoundpath, 'rb')
-		data = f.read()
+		data = b"""\
+HTTP/1.1 404 Not Found
+
+"""
+		data += f.read()
 		f.close()
-	return data
+	return data	
 
 
 # Main server code
